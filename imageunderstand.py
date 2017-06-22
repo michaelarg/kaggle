@@ -17,19 +17,20 @@ columns=['agriculture','clear','cloudy','primary','road','shifting','water','par
 
 hmat = pd.DataFrame(0, index=mat['image'], columns=columns)
 
-
 for index, row in mat.iterrows():
     liststr = str.split(row['tags']," ")
     for tag in liststr:
         hmat[tag].ix[index]=1
-    #hmat['sumrow'].ix[index]=hmat.ix[index].sum(axis=0)
 
+hmats = hmat.sum(1) 
+countmat = hmats.value_counts(normalize=False)
+countmat_vals = countmat.index.values.tolist()
+fig , ax1 = plt.subplots(1,1)
+plt.bar(range(len(countmat)), countmat, align='center', alpha=0.5)
+plt.title("tag count frequency")
+plt.xticks(range(len(countmat_vals)),countmat_vals)
+plt.show()
 
-f=hmat[columns].sum()
-#rowsum=hmat['sumrow].sum(axis=0)
-
-
-l=pd.crosstab([hmat.primary,hmat.cloudy,hmat.water], hmat.road, margins=True)
 
 heat = hmat.groupby(columns).size().reset_index(name="frequency")
 heat = heat.sort('frequency',axis=0,ascending=False)
@@ -46,3 +47,8 @@ ax1.set_ylabel('Image Count')
 ax1.set_yticklabels(heat.frequency[0:20], fontsize=10)
 ax1.set_xticklabels(columns, fontsize=10, rotation='vertical')
 plt.show()
+
+#Clear, partly cloudy, cloudy and haze
+# Each chip will have one and potentially more than one atmospheric label
+# and zero or more common and rare labels
+# cloudy should have no other labels possible errors
