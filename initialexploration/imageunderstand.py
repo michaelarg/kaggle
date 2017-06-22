@@ -2,6 +2,8 @@ import os,sys
 sys.path.append('/usr/local/lib/python2.7/site-packages')
 import pandas as pd
 import numpy as np
+import cv2
+import csv
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
@@ -15,13 +17,10 @@ columns=['agriculture','clear','cloudy','primary','road','shifting','water','par
 
 hmat = pd.DataFrame(0, index=mat['image'], columns=columns)
 
-
 for index, row in mat.iterrows():
     liststr = str.split(row['tags']," ")
     for tag in liststr:
         hmat[tag].ix[index]=1
-
-hmat.to_csv("binmap.csv", encoding = 'utf-8')
 
 hmats = hmat.sum(1) 
 countmat = hmats.value_counts(normalize=False)
