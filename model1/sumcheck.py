@@ -19,4 +19,6 @@ def quote(s1):
     return "'%s'" % s1
 
 ko['sum']= ko.sum(1)
-kosub = ko.query('sum == 1 and cloudy == 1' ) #This allows you to check which tags are unique
+kosub = ko.query('sum == 2 and primary and road == 1' ) #This allows you to check which tags are unique
+
+print len(kosub)

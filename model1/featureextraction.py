@@ -19,7 +19,16 @@ def quote(s1):
     return "'%s'" % s1
 
 ko['sum']= ko.sum(1)
-kosub = ko.query('sum == 1 and cloudy == 1' ) #This allows you to check which tags are unique
+kosub = ko.query('sum == 2 and primary == 1 and partly_cloudy == 1' ) #This allows you to check which tags are unique
+
+columns=['agriculture','cloudy','primary','road','shifting','water','partly_cloudy','haze','habitation','slash_burn','cultivation','blooming',
+         "bare_ground",'selective_logging','conventional_mine','artisinal_mine','blow_down']
+
+#for att in columns:
+#    qq = 'sum == 2 and primary and %s == 1' % att
+#    print qq
+#    kosub = ko.query(qq)  #This allows you to check which tags are unique
+#    print len(kosub)
 
 if len(kosub) > 25:
     sam=kosub.sample(26)
@@ -66,8 +75,18 @@ for i in range(25):
 plt.show()
 
 
+hsv_img = cv2.cvtColor(images[24],cv2.COLOR_RGB2HSV)
+h, s, v = cv2.split(hsv_img) 
+hvals=h.flatten()
+counts, bins, bars = plt.hist(hvals, 179)
+plt.show()
 
-
+#zero bin counts
+count = 0
+for i in range(len(counts)):
+    if counts[i] == 0:
+        count=count+1
+print count
 
 
 

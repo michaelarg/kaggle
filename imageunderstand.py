@@ -13,6 +13,9 @@ mat['tags'].values.tolist()
 columns=['agriculture','clear','cloudy','primary','road','shifting','water','partly_cloudy','haze','habitation','slash_burn','cultivation','blooming',
          "bare_ground",'selective_logging','conventional_mine','artisinal_mine','blow_down']
 
+
+
+
 hmat = pd.DataFrame(0, index=mat['image'], columns=columns)
 
 
@@ -20,6 +23,14 @@ for index, row in mat.iterrows():
     liststr = str.split(row['tags']," ")
     for tag in liststr:
         hmat[tag].ix[index]=1
+
+
+
+
+hmat = hmat.drop('clear', axis=1)
+
+columns=['agriculture','cloudy','primary','road','shifting','water','partly_cloudy','haze','habitation','slash_burn','cultivation','blooming',
+         "bare_ground",'selective_logging','conventional_mine','artisinal_mine','blow_down']
 
 hmat.to_csv("binmap.csv", encoding = 'utf-8')
 
