@@ -26,17 +26,10 @@ from keras.optimizers import SGD
 from sklearn.metrics import fbeta_score
 from keras.callbacks import ModelCheckpoint, EarlyStopping
 
-#Ok so the problem with this code the way I have written is the distinction between the actual images
-#and the corresponding ones hot matrix.
-#The problem is that the actual image files are not in the right order when they are read in. *In other versions
-#of this code there is a sort function that puts these in the right order.
-#The ones hot csv that is read in is in the right order, so there is a possibility the images and their ones hot label representation
-#could be misaligned. 
-
 filepath="weights.best.hdf5"
 
 os.chdir('/home/tester/kerasnn/')
-#os.chdir('/Users/michaelargyrides/Desktop/Kaggle/kerasnn')
+
 trainy=pd.DataFrame.from_csv("trainM.csv")
 print trainy.shape
 trainy.ix[:,1:17]
@@ -112,11 +105,4 @@ predictions2=np.round(pred2)
 
 predictions = np.vstack((predictions,predictions2))
 np.savetxt("predictions64.csv",predictions, delimiter=',',fmt='%.14f')
-#plot_model(model, to_file='model.png')
 
-#np.savetxt("predictionsB.csv",predictions, delimiter=',',fmt='%.14f')
-#plot_model(model, to_file='model.png')
-
-#Dataanalytics1
-#categorical: 0.81997541177
-#binary: 0.798805210182
