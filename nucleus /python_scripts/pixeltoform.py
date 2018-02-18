@@ -4,12 +4,32 @@ import numpy as np
 sys.path.append('/usr/local/lib/python2.7/site-packages')
 import cv2
 import re
-
+from os import listdir
+import glob
+import matplotlib.pyplot as plt
+#This will only hold while the imag size is 256
 #os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/images")
 #img = cv2.imread('0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9.png',0) #the image read in is a grayscale image
 
+''' **this script isn't working at the moment
+This script is written for the kaggle competition of classifying nuclei.
+They have a particular format for the submission scoring. Ex. 32 3 means
+start at pixel 32 and then 33 and 34.
+It reads in a given image and then converts it to this form.
+To check that this is correct I will then convert the submission form back
+into a matrix form to check that it is correct by printing the matrix.
+'''
+
+
 os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/masks")
-img = cv2.imread('0adbf56cd182f784ca681396edc8b847b888b34762d48168c7812c79d145aa07.png',0) #the image read in is a grayscale image
+img = cv2.imread('8246970b0d108736b3e8a1a45872737a30a2332dc00fce23534c86b1cbc80f73.png',0) #the image read in is a grayscale image
+
+#print(glob.glob("/*.png"))
+
+for filename in glob.glob('/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/masks*.png'):
+    print filename
+
+print img.shape
 
 a = np.nonzero(img)
 b = zip(a[1]*256+1,a[0])
@@ -35,7 +55,7 @@ def conseq_count(list):
             count_list.append(count)
             count = 1
     count_list.append(count)
-    print len(novals)
+    print "here!" , len(novals)
     return zip(novals, count_list)
 
 
@@ -44,11 +64,13 @@ dd = conseq_count(c)
 dd = re.sub(r'[^\w]', ' ', str(dd))      
 dd = " ".join(dd.split())
 
+print dd
+
 #print dd
 dd = dd.split()
 k = np.array(dd)
 k= k.astype(int)
-masks = k.reshape([22,2])
+masks = k.reshape([len(dd)/2,2])
 
 
 master = []
@@ -81,17 +103,15 @@ pwq = [list(e) for e in zip([blank,zilch])]
 out_tup = [item for item in er if item[1] not in dds[0] ]
 
 for i in er:    #print i[0]
-    dds[i[0]][1] = 1
+    dds[i[0]][1] = 255
 
 pixelvals = [index[1] for index in dds]
 
 pixel_shape = np.reshape(pixelvals, [np.shape(img)[0],np.shape(img)[0]])
 
-cv2.imshow('image',img)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
-
-
+plt.imshow(pixel_shape)
+plt.gray()
+plt.show()
 
 #rew = [dd
 
