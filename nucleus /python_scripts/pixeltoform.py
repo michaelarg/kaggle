@@ -7,11 +7,10 @@ import re
 from os import listdir
 import glob
 import matplotlib.pyplot as plt
-#This will only hold while the imag size is 256
-#os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/images")
-#img = cv2.imread('0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9.png',0) #the image read in is a grayscale image
 
 '''
+20/02/18 MA
+*variable names need to be redone as they are pretty silly/meaningless at the moment
 This script is written for the kaggle competition of classifying nuclei.
 They have a particular format for the submission scoring. Ex. 32 3 means
 start at pixel 32 and then 33 and 34.
@@ -108,8 +107,6 @@ def from_formtest(subform, img):
     test = pixel_shape.T
     return test
 
-
-
 def plot_test(test, real):
     print "are plots equal", np.array_equal(test,real)
     print np.count_nonzero(test)
@@ -130,12 +127,11 @@ def plot_test(test, real):
 
 def main():
     os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/masks")
-    img = cv2.imread('39acbc082528c996d9fc3a3181938580f6c48461ee9eea91ff273e9d2c4499d0.png',0) #the image read in is a grayscale image
+    img = cv2.imread('f61af9040d085e725fafe93e102ee343bf8528651e8ad2cbc23487984db16e01.png',0) #the image read in is a grayscale image
 
     subform = to_form(img)
     print subform
     coolmat = from_formtest(subform, img)
-
 
     plot_test(coolmat, img)
 
