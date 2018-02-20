@@ -33,9 +33,7 @@ def to_form(img):
     novals.append(b[0]) #the first value is put in
     
     novals.pop(0)
-    
-  #  print novals
- #   print 'length of list' , len(b)
+
     count = 1
     for i in range(len(b)-1):
         if b[i] + 1 == b[i+1]:
@@ -59,7 +57,6 @@ def to_form(img):
     kk = " ".join(kk.split())
 
     return kk
-
 
 def from_formtest(subform, img):
     subform = subform.split()
@@ -95,9 +92,7 @@ def from_formtest(subform, img):
     out_tup = [item for item in er if item[1] not in dds[0] ] #outtup is a list of each pixel from sub form and a 1
 
     countit=0
-    for i in er:    #print i[0]
-       # print i[0]-1
-      
+    for i in er: 
         dds[i[0]-1][1] = 255
         countit += 1
 
@@ -121,9 +116,6 @@ def plot_test(test, real):
     plt.title("actual")
     plt.gray()
     plt.show(block=True)
-
-
-#print np.array_equal(img, test)
 
 def main():
     os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/masks")
