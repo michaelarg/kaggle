@@ -128,8 +128,8 @@ def main():
     plot_test(coolmat, img)
 
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+ #   main()
 
 
 
