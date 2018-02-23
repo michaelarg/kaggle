@@ -10,6 +10,8 @@ import matplotlib.pyplot as plt
 Description: here we write some to test the intersection over union metric that we need for object
 detection or object segemntation.
 
+How it works - calculates the non zero pixels in the image which is not going to work with real image segemntation
+
 Input: two images - when actually using the algorithm one will be the train image with a box around the
 area of interest. The other will be the predicted box.
 
@@ -18,7 +20,8 @@ Output: iou metric as a float and possibly the image of the two boxes drawn.
 *Issues - right now the problem is that it is a solid box and the whole algorithm relies on it being
 a solid box. What happens when the box is not filled in and there is an image in there? Probably fails.
 
-*Todo - 
+
+*Todo - one remedy is to have the algoritm
 '''
 
 
