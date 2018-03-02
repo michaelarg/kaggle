@@ -31,8 +31,10 @@ np.set_printoptions(threshold=np.nan)
 def to_form(img):
     a = np.nonzero(img) #find all the indices that are non zero in the image
     #print a
+   # print a
     a = zip(a[1], a[0])
     a = sorted(a)
+ #   print "a",a
     #print a
     a = [list(i) for i in a]
     b = [i[0]*img.shape[0]+1+i[1] for i in a]
@@ -50,12 +52,12 @@ def to_form(img):
     novals.pop(0)
 
     starter = 0
-    print "already",novals
+ #   print "already",novals
 
     count = 1 #start of with
     if (b[0] + 1) != b[1] and count == 1:
  #       print "one", b[i]
-        print "first not consecutive"
+ #       print "first not consecutive"
         novals.append(b[0])
         count_list.append(1)
  #           print "shouldn't be happening here"
@@ -91,11 +93,11 @@ def to_form(img):
 
         
     if (b[len(b)-1]-1) == b[len(b)-2]: #This takes care of the llast number! #end case
-        print "end are consecutive"
-        print "current count val", count
-        print "current count list", count_list
+ #       print "end are consecutive"
+#        print "current count val", count
+#        print "current count list", count_list
            # novals.append(b[len(b)-1])
-        print "last conut value", count_list[-1]
+#        print "last conut value", count_list[-1]
         tmp = count_list[-1]
 
         count_list.append(count)
@@ -104,13 +106,13 @@ def to_form(img):
 
  #   count_list.pop(0)
 
-    print "printing novals", novals
+   # print "printing novals", novals
         
-    print "count list", count_list
+   # print "count list", count_list
 
 
     if (b[len(b)-1]-1) != b[len(b)-2]: #This takes care of the llast number!
-        print "they are not consecutive bra"
+ #       print "they are not consecutive bra"
         novals.append(b[len(b)-1])
         count_list.append(1)
 
@@ -130,67 +132,13 @@ def to_form(img):
 
    # print "kk",kk
 
-    print "result", kk
+    #print "result", kk
     
     return kk
 
-def from_formtest(subform, img):
-    print "shape of img" , np.shape(img)[1]
-    #print "subform", subform[0]
-    print type(subform)
-    subform = subform.split()
- #   print subform
-    k = np.array(subform)
-    k= k.astype(int)
-
-    masks = k.reshape([len(subform)/2,2])
-   # print masks
-    master = []
-    for i in range(len(masks)):
-        sub = []
-        for j in range(masks[i][1]):
-            sub.append(masks[i][0] + j)
-        master.append(sub)
-
-    C = [item for sublist in master for item in sublist] #very efficient list operations!
-    print "length of C", len(C)
-    Z = np.repeat(1,len(C))
-    er = zip(C,Z)
-
-    print "length of er" , len(er)
-
-    blank = [range(0,np.shape(img)[0] * np.shape(img)[1])] #big list! index
-    blank = [item for sublist in blank for item in sublist]
-
-    zilch = [np.repeat(0, np.shape(img)[0] * np.shape(img)[1] )] #zeros
-    zilch = [item for sublist in zilch for item in sublist]
-    
-    
-
-    dds = zip(blank, zilch )
-
-    dds = [list(elem) for elem in dds]
-    er = [list(elem) for elem in er] #tuples to lists
-    pwq = [list(e) for e in zip([blank,zilch])] #big list of 256*256 values all zero now
-
-    out_tup = [item for item in er if item[1] not in dds[0] ] #outtup is a list of each pixel from sub form and a 1
-
-    countit=0
-    for i in er:
-        try:
-            dds[i[0]-1][1] = 255
-            countit += 1
-        except IndexError:
-            print "trying to access", i
-
-    pixelvals = [index[1] for index in dds]
-    print pixelvals[1000:2000]
 
 
-    pixel_shape = np.reshape(pixelvals, [np.shape(img)[1],np.shape(img)[0]])
- #  test = pixel_shape.T
-    test = pixel_shape
-    return test
+
 
 def from_formtest_nonsquare(subform, s1, s2):
     print s1,s2
@@ -212,14 +160,22 @@ def from_formtest_nonsquare(subform, s1, s2):
     
     #print subform
     subform = subform.split()
+
+   # print subform[0:10]
     #print subform
     k = np.array(subform)
+    
     k= k.astype(int)
+
+   # print "k",k[0:10]
     #print np.shape(k)[0]
  #   print np.shape(k)
 
     masks = k.reshape([len(subform)/2,2])
-   # print masks
+
+   # print "masks",masks[0:10]
+    
+    #print masks
    # print masks
     master = []
     for i in range(len(masks)):
@@ -229,6 +185,7 @@ def from_formtest_nonsquare(subform, s1, s2):
         master.append(sub)
 
     master = sorted(master)
+ #   print "master",master #[0:10]
     #print len(master)
     #Try to remove possible duplicates but that really should be a problem
  #   ab = list(set(master))    
@@ -240,7 +197,7 @@ def from_formtest_nonsquare(subform, s1, s2):
    # print "length of C", len(C)
     Z = np.repeat(1,len(C))
     er = zip(C,Z)
-
+ #   print "check",er
  #  print er[1:20]
 
  #  print "length of er" , len(er)
@@ -266,7 +223,8 @@ def from_formtest_nonsquare(subform, s1, s2):
 
 
  #   print er[1:20]
-
+ #   print "subform", len(subform)
+ #   print "length of eR", len(er)
 
     countit=0
     for i in er:
@@ -274,43 +232,57 @@ def from_formtest_nonsquare(subform, s1, s2):
             #print i
             dds[i[0]-1][1] = 255  #dds is a list of lists each with an index from 0 to last pixel
 
-            #print "this is i", i[0]-1            
-    
             countit += 1
         except IndexError:
+            print "subform", len(subform)
+            print "first subform", subform[0]
+            print "failed with a size of", s1, s2
             print "trying to access", i
 
  #   print "DDS", dds[62785:62790]
+
+    print dds[0:10]
+   # print index[0:10]
+ 
     pixelvals = [index[1] for index in dds]
 
+ #   print "print vals", pixelvals[154439:154443]
  #   print "pixelvals" , pixelvals[62785:62790]
  #   print "pixelvals", len(pixelvals)
 
  #   print "pplease be it!"
     #print np.shape(img)[0]
     #print np.shape(img)[1]
-    pixel_shape = np.reshape(pixelvals, [s1,s2])
+    pixel_shape = np.reshape(pixelvals, [s2,s1])
+
+ #   print "first row",pixel_shape[:,0]
+    
     test = pixel_shape
 
+ #   print "AAAH", test[297,0]
+    
+
+ #   print "row zero", test.T[0]
     #print test
 #    test = pixel_shape
 
    # print "TEST", np.nonzero(test)
 
-
+   # print "nonzero vectors", np.nonzero(test.T)
+    
     return test.T
 
 def plot_test(test, real):
     
     print "are plots equal", np.array_equal(test,real)
-    print np.count_nonzero(test)
-    print np.count_nonzero(real)
+   # print np.count_nonzero(test)
+   # print np.count_nonzero(real)
 
-    print "test",   np.nonzero(test)[0][0]
-    print "test",   np.nonzero(test)[1][0]
+   # print "test",   np.nonzero(test)[0]
+    #print "test",   np.nonzero(test)[1]
 
-    print "real",   np.nonzero(real)[0][0]
-    print "real",   np.nonzero(real)[1][0]
+    #print "real",   np.nonzero(real)[0][0]
+    #print "real",   np.nonzero(real)[1][0]
 
     #print "shape of test" , np.shape(test)[0]
     #print "shape of test" , np.shape(test)[1]
@@ -339,14 +311,19 @@ each file_path[0]
 
 def mask_flatten(dir, name):
     #print "here!", dir
-    print "dis" , name
-    print "that", dir
+#    print "dis" , name
+ #   print "that", dir
     
     image_paths = [os.path.join(dir, x) for x in os.listdir(dir) if x.endswith('.png')]
    # print "each mask to be collected", image_paths
     pixelbank = []
     for img in image_paths:
-        img = cv2.imread(img,0) #the image read in is a grayscale image
+        img = cv2.imread(img,0)
+ #      cv2.imshow("image",img) #ALL THESE IMAGE ARE OF THE SAME SIZE
+#        cv2.waitKey(0)
+#        cv2.destroyAllWindows()
+
+        #the image read in is a grayscale image
  #       plot_test(img,img)
         
         tmp = to_form(img)
@@ -359,7 +336,7 @@ def mask_flatten(dir, name):
     pixelbank = pixelbank.replace(',', '')
     pixelbank = pixelbank.replace("'", '')
 
-    print pixelbank
+   # print "pixels", pixelbank
 
     #that sizing is not changing!
     s1 = np.shape(img)[0]
@@ -369,11 +346,19 @@ def mask_flatten(dir, name):
     
     coolmat = from_formtest_nonsquare(pixelbank, s1, s2)
 
+ #  plot_test(coolmat,coolmat)
+
+#    cv2.imshow("image",coolmat) #ALL THESE IMAGE ARE OF THE SAME SIZE
+#    cv2.waitKey(0)
+#    cv2.destroyAllWindows()
+    
 
     #dirc = "/Users/michaelargyrides/Documents/datascience_nuclei/masks"
     os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/masks")
  #   nm = dir+"cool_mask.png"
  #   print nm
+
+    
 
 
     fig=plt.figure()
