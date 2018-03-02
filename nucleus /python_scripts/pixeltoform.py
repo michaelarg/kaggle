@@ -4,8 +4,10 @@ import numpy as np
 sys.path.append('/usr/local/lib/python2.7/site-packages')
 import cv2
 import re
+from distutils.dir_util import copy_tree
 from os import listdir
 import glob
+import tensorflow as tf
 import matplotlib.pyplot as plt
 from PIL import Image
 from collections import OrderedDict
@@ -23,6 +25,7 @@ into a matrix form to check that it is correct by printing the matrix.
 ToDo: This seems to only be working with square matrices. 
 '''
 
+print tf.__version__
 
 np.set_printoptions(threshold=np.nan)
 def to_form(img):
@@ -33,6 +36,12 @@ def to_form(img):
     #print a
     a = [list(i) for i in a]
     b = [i[0]*img.shape[0]+1+i[1] for i in a]
+
+
+  #  b = [41,45,46, 47]
+
+   # print a
+    #print "is it wrong here BB", b
     
     count_list = []
     novals = []
@@ -40,28 +49,89 @@ def to_form(img):
     
     novals.pop(0)
 
-    count = 1
-    for i in range(len(b)-1):
-        if b[i] + 1 == b[i+1]:
-            if count == 1:
-                novals.append(b[i])
+    starter = 0
+    print "already",novals
+
+    count = 1 #start of with
+    if (b[0] + 1) != b[1] and count == 1:
+ #       print "one", b[i]
+        print "first not consecutive"
+        novals.append(b[0])
+        count_list.append(1)
+ #           print "shouldn't be happening here"
+        starter = 1       
+
+    
+    for i in range(starter,len(b)-1):
+ #       print "i",b[i]
+ 
+        if b[i] + 1 == b[i+1] and count == 1:
+ #          print "two", b[i]
+ #           count_list.append(count)
+            count += 1
+ #           print "inserting" , b[i]
+            novals.append(b[i])
+
+        elif b[i] + 1 == b[i+1] and count != 1:
+ #           print "third", b[i]
             count +=1
-        else:
+
+        elif b[i] + 1 != b[i+1] and count == 1:
+ #           print "fourth", b[i]
+            novals.append(b[i])
+            count_list.append(count)
+            count = 1
+            
+
+        elif b[i] + 1 != b[i+1] and count != 1:
+ #           print "fifth", b[i]
+ #           count +=1
             count_list.append(count)
             count = 1
 
-    if (b[len(b)-1]-1) != b[len(b)-2]:
+        
+    if (b[len(b)-1]-1) == b[len(b)-2]: #This takes care of the llast number! #end case
+        print "end are consecutive"
+        print "current count val", count
+        print "current count list", count_list
+           # novals.append(b[len(b)-1])
+        print "last conut value", count_list[-1]
+        tmp = count_list[-1]
+
+        count_list.append(count)
+#        count_list.append(tmp + 1)
+
+
+ #   count_list.pop(0)
+
+    print "printing novals", novals
+        
+    print "count list", count_list
+
+
+    if (b[len(b)-1]-1) != b[len(b)-2]: #This takes care of the llast number!
         print "they are not consecutive bra"
         novals.append(b[len(b)-1])
         count_list.append(1)
+
+ #  else if (b[len(b)-1]-1) != b[len(b)-2]:
+ #       novals
           
-    count_list.append(count)
+ #   count_list.append(count)
 
     kk = zip(novals, count_list)
+
+
+    
 
     kk = re.sub(r'[^\w]', ' ', str(kk))      
     kk = " ".join(kk.split())
    # print "type of", type(kk)
+
+   # print "kk",kk
+
+    print "result", kk
+    
     return kk
 
 def from_formtest(subform, img):
@@ -122,19 +192,20 @@ def from_formtest(subform, img):
     test = pixel_shape
     return test
 
-def from_formtest_nonsquare(subform, img):
-    print "shape of img" , np.shape(img)[0]
-    print "shape of img" , np.shape(img)[1]
+def from_formtest_nonsquare(subform, s1, s2):
+    print s1,s2
+    #print "shape of img" , np.shape(img)[0]
+    #print "shape of img" , np.shape(img)[1]
 
     #print "total number of pixels" , np.shape(img)[0] * np.shape(img)[1]
 
-    pix_count = np.shape(img)[0] * np.shape(img)[1]
+    pix_count = s1 * s2
 
-    print "total number of pixels" , pix_count
+ #   print "total number of pixels" , pix_count
 
 
     #print "subform", subform[0]
-    print type(subform)
+ #   print type(subform)
 
    # print "what is read in", subform
 
@@ -158,7 +229,7 @@ def from_formtest_nonsquare(subform, img):
         master.append(sub)
 
     master = sorted(master)
-    print len(master)
+    #print len(master)
     #Try to remove possible duplicates but that really should be a problem
  #   ab = list(set(master))    
 #    print len(ab)
@@ -166,7 +237,7 @@ def from_formtest_nonsquare(subform, img):
     #print "master",master[1]
 
     C = [item for sublist in master for item in sublist] #very efficient list operations!
-    print "length of C", len(C)
+   # print "length of C", len(C)
     Z = np.repeat(1,len(C))
     er = zip(C,Z)
 
@@ -182,7 +253,7 @@ def from_formtest_nonsquare(subform, img):
     zilch = [np.repeat(0, pix_count )] #zeros
     zilch = [item for sublist in zilch for item in sublist]
 
-    print "length of zilch" , len(zilch)
+   # print "length of zilch" , len(zilch)
 
     dds = zip(blank, zilch )
  #  print dds[0:10]
@@ -209,19 +280,19 @@ def from_formtest_nonsquare(subform, img):
         except IndexError:
             print "trying to access", i
 
-    print "DDS", dds[62785:62790]
+ #   print "DDS", dds[62785:62790]
     pixelvals = [index[1] for index in dds]
 
  #   print "pixelvals" , pixelvals[62785:62790]
-    print "pixelvals", len(pixelvals)
+ #   print "pixelvals", len(pixelvals)
 
-    print "pplease be it!"
-    print np.shape(img)[0]
-    print np.shape(img)[1]
-    pixel_shape = np.reshape(pixelvals, [np.shape(img)[1],np.shape(img)[0]])
+ #   print "pplease be it!"
+    #print np.shape(img)[0]
+    #print np.shape(img)[1]
+    pixel_shape = np.reshape(pixelvals, [s1,s2])
     test = pixel_shape
 
- #   print test
+    #print test
 #    test = pixel_shape
 
    # print "TEST", np.nonzero(test)
@@ -261,9 +332,18 @@ def plot_test(test, real):
     plt.gray()
     plt.show(block=True)
 
+'''
+each file_path[0]
 
-def mask_flatten(dir):
+'''
+
+def mask_flatten(dir, name):
+    #print "here!", dir
+    print "dis" , name
+    print "that", dir
+    
     image_paths = [os.path.join(dir, x) for x in os.listdir(dir) if x.endswith('.png')]
+   # print "each mask to be collected", image_paths
     pixelbank = []
     for img in image_paths:
         img = cv2.imread(img,0) #the image read in is a grayscale image
@@ -273,43 +353,173 @@ def mask_flatten(dir):
         pixelbank.append(tmp)
  #       pixelbank = unlist(pixelbank)
 
+ #   from_formtest_nonsquare(pixelbank, img):
+
     pixelbank = str(pixelbank)[1:-1]
     pixelbank = pixelbank.replace(',', '')
     pixelbank = pixelbank.replace("'", '')
+
+    print pixelbank
+
+    #that sizing is not changing!
+    s1 = np.shape(img)[0]
+    s2 = np.shape(img)[1]
+
+ #  print s1,s2
+    
+    coolmat = from_formtest_nonsquare(pixelbank, s1, s2)
+
+
+    #dirc = "/Users/michaelargyrides/Documents/datascience_nuclei/masks"
+    os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/masks")
+ #   nm = dir+"cool_mask.png"
+ #   print nm
+
+
+    fig=plt.figure()
+    ax=fig.add_subplot(1,1,1)
+    plt.axis('off')
+    plt.imshow(coolmat, cmap='gray')
+    extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+
+    plt.savefig(name+"_mask.png", bbox_inches=extent)
+    
+    
     return pixelbank
         
     
 
 def main():
-    os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/masks")
-    img_path = "/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0acd2c223d300ea55d0546797713851e818e5c697d073b7f4091b96ce0f3d2fe/masks"
-    image_paths = [os.path.join(img_path, x) for x in os.listdir(img_path) if x.endswith('.png')]
-    img = cv2.imread(image_paths[0],0)
 
 
+    dir = "/Users/michaelargyrides/Documents/datascience_nuclei/subset/"
+    os.chdir(dir)
+    file_path = next(os.walk('.'))[1]
+#    print "IM HERE", file_path[0]
+ #   names = file_path
+
+    #print "get in !", file_path[0]
+    #print file_path
+
+
+    for i in range(0,len(file_path)):
+        file_path[i]= file_path[i]+"/masks"
+        file_path[i] = dir+file_path[i]
+    print "this is file paths", file_path #each of these need to be sent to the function
+
+
+    print len(file_path)
+
+
+    #print fil
+   # print "yo", file_path[0]
+
+ #   dir = file_path[0]
+    vv = next(os.walk('.'))[1]
+    
+   # print "YO", vv
+
+    for i in range(0,len(file_path)):
+        a = mask_flatten(file_path[i], vv[i])
+
+    #Moving over images in subfolders to one main images folder
+    
+    img_dir = "/Users/michaelargyrides/Documents/datascience_nuclei/subset/"
+    os.chdir(img_dir)
+    file_path = next(os.walk('.'))[1]
+    print file_path
+
+    for i in range(0,len(file_path)):
+       file_path[i]= file_path[i]+"/images"
+       file_path[i] = img_dir+file_path[i]
+    print "this is file paths", file_path #each of these need to be sent to the function
+
+
+    for i in range(0,len(file_path)):
+        copy_tree(file_path[i], "/Users/michaelargyrides/Documents/datascience_nuclei/images")
+
+
+
+
+
+
+
+
+
+
+
+
+    
+ #   image_paths = [os.path.join(dir, x) for x in os.listdir(dir) if x.endswith('.png')]
+    #print image_paths
+
+
+    #print len(file_path)
+    #print file_path[0]
+    #print image_paths[0][0]
+    
+
+
+#mask_flatten(dir)
+
+
+    #for path in file_path:
+#        mask_flaten(path)
+
+
+ #   a = mask_flatten(dir)
+
+    
+ #   os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/masks")
+#    img_path = "/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0acd2c223d300ea55d0546797713851e818e5c697d073b7f4091b96ce0f3d2fe/masks"
+#    image_paths = [os.path.join(img_path, x) for x in os.listdir(img_path) if x.endswith('.png')]
+#    img = cv2.imread(image_paths[0],0)
+
+    
+ #  dataset = tf.data.TFRecordDataset("/Users/michaelargyrides/Documents/datascience_nuclei/train-00001-of-00001.tfrecord")
+ #   path = "/Users/michaelargyrides/Documents/datascience_nuclei/images/"
+#    os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/subset")
+
+ #   directory = "/Users/michaelargyrides/Documents/datascience_nuclei/subset"
+
+    
+
+
+ #   for i,file in file_path:
+#        file_path[file] = file + "mask" 
+    #print fd
+#    print file_path
+    
+ #   file_path = [os.path.join(img_path, x) for x in os.listdir(img_path) if x.endswith('.png')]
+ #   print file_path
 #    print img_path
  #   print image_paths
-    
-    a = mask_flatten(img_path)
+
+#    dir = "/Users/michaelargyrides/Documents/datascience_nuclei/subset/"
+#    os.chdir(dir)
+ #   a = mask_flatten(dir)
 
  #   print "a", a
 
-    coolmat = from_formtest_nonsquare(a, img)
+ #   coolmat = from_formtest_nonsquare(a, img)
 
 
    # print np.array_equal(img,coolmat)
 
 
-    plot_test(coolmat, img)
+ #   plot_test(coolmat, img)
 
 
-    os.chdir("..")
-    fig=plt.figure()
-    ax=fig.add_subplot(1,1,1)
-    plt.axis('off')
-    plt.imshow(coolmat)
-    extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
-    plt.savefig(img_path+'_total.png', bbox_inches=extent)
+ #   save_path = "/Users/michaelargyrides/Documents/datascience_nuclei/masks"
+
+#    os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/masks")
+    
+#    fig=plt.figure()
+#    ax=fig.add_subplot(1,1,1)
+#    plt.axis('off')
+#    plt.imshow(coolmat)
+#    extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+ #   plt.savefig(img_path+'_total.png', bbox_inches=extent)
 #    plt.savefig(img_path+"master.png", frameon=False)
 
 if __name__ == '__main__':
