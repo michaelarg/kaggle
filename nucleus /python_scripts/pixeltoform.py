@@ -28,7 +28,7 @@ ToDo: This seems to only be working with square matrices.
 print tf.__version__
 
 np.set_printoptions(threshold=np.nan)
-def to_form(img):
+def to_form(img, pth):
     a = np.nonzero(img) #find all the indices that are non zero in the image
     #print a
    # print a
@@ -98,7 +98,13 @@ def to_form(img):
 #        print "current count list", count_list
            # novals.append(b[len(b)-1])
 #        print "last conut value", count_list[-1]
-        tmp = count_list[-1]
+        try:
+            tmp = count_list[-1]
+            #pretty sure this doesn't do anything
+
+        except IndexError:
+            print "somethig!", pth
+            print b
 
         count_list.append(count)
 #        count_list.append(tmp + 1)
@@ -241,7 +247,7 @@ def from_formtest_nonsquare(subform, s1, s2):
 
  #   print "DDS", dds[62785:62790]
 
-    print dds[0:10]
+    #print dds[0:10]
    # print index[0:10]
  
     pixelvals = [index[1] for index in dds]
@@ -326,7 +332,7 @@ def mask_flatten(dir, name):
         #the image read in is a grayscale image
  #       plot_test(img,img)
         
-        tmp = to_form(img)
+        tmp = to_form(img, str(name))
         pixelbank.append(tmp)
  #       pixelbank = unlist(pixelbank)
 
@@ -368,7 +374,7 @@ def mask_flatten(dir, name):
     extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
 
     plt.savefig(name+"_mask.png", bbox_inches=extent)
-    
+    plt.close()
     
     return pixelbank
         
@@ -423,89 +429,6 @@ def main():
     for i in range(0,len(file_path)):
         copy_tree(file_path[i], "/Users/michaelargyrides/Documents/datascience_nuclei/images")
 
-
-
-
-
-
-
-
-
-
-
-
-    
- #   image_paths = [os.path.join(dir, x) for x in os.listdir(dir) if x.endswith('.png')]
-    #print image_paths
-
-
-    #print len(file_path)
-    #print file_path[0]
-    #print image_paths[0][0]
-    
-
-
-#mask_flatten(dir)
-
-
-    #for path in file_path:
-#        mask_flaten(path)
-
-
- #   a = mask_flatten(dir)
-
-    
- #   os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0a7d30b252359a10fd298b638b90cb9ada3acced4e0c0e5a3692013f432ee4e9/masks")
-#    img_path = "/Users/michaelargyrides/Documents/datascience_nuclei/stage1_train/0acd2c223d300ea55d0546797713851e818e5c697d073b7f4091b96ce0f3d2fe/masks"
-#    image_paths = [os.path.join(img_path, x) for x in os.listdir(img_path) if x.endswith('.png')]
-#    img = cv2.imread(image_paths[0],0)
-
-    
- #  dataset = tf.data.TFRecordDataset("/Users/michaelargyrides/Documents/datascience_nuclei/train-00001-of-00001.tfrecord")
- #   path = "/Users/michaelargyrides/Documents/datascience_nuclei/images/"
-#    os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/subset")
-
- #   directory = "/Users/michaelargyrides/Documents/datascience_nuclei/subset"
-
-    
-
-
- #   for i,file in file_path:
-#        file_path[file] = file + "mask" 
-    #print fd
-#    print file_path
-    
- #   file_path = [os.path.join(img_path, x) for x in os.listdir(img_path) if x.endswith('.png')]
- #   print file_path
-#    print img_path
- #   print image_paths
-
-#    dir = "/Users/michaelargyrides/Documents/datascience_nuclei/subset/"
-#    os.chdir(dir)
- #   a = mask_flatten(dir)
-
- #   print "a", a
-
- #   coolmat = from_formtest_nonsquare(a, img)
-
-
-   # print np.array_equal(img,coolmat)
-
-
- #   plot_test(coolmat, img)
-
-
- #   save_path = "/Users/michaelargyrides/Documents/datascience_nuclei/masks"
-
-#    os.chdir("/Users/michaelargyrides/Documents/datascience_nuclei/masks")
-    
-#    fig=plt.figure()
-#    ax=fig.add_subplot(1,1,1)
-#    plt.axis('off')
-#    plt.imshow(coolmat)
-#    extent = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
- #   plt.savefig(img_path+'_total.png', bbox_inches=extent)
-#    plt.savefig(img_path+"master.png", frameon=False)
 
 if __name__ == '__main__':
     main()
